@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ecommerce Dashboard</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --sidebar-width: 250px;
+            --sidebar-bg: #343a40;
+            --sidebar-color: #fff;
+            --sidebar-active-bg: #007bff;
+            --header-bg: #f8f9fa;
+            --card-color-1: #4e73df;
+            --card-color-2: #1cc88a;
+            --card-color-3: #36b9cc;
+            --card-color-4: #f6c23e;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow-x: hidden;
+            background-color: #f8f9fc;
+        }
+        
+        /* Sidebar styling */
+        .sidebar {
+            width: var(--sidebar-width);
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            background: var(--sidebar-bg);
+            color: var(--sidebar-color);
+            transition: all 0.3s;
+            z-index: 1000;
+        }
+        
+        .sidebar-header {
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.2);
+        }
+        
+        .sidebar ul.components {
+            padding: 20px 0;
+        }
+        
+        .sidebar ul li a {
+            padding: 10px 20px;
+            display: block;
+            color: var(--sidebar-color);
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        
+        .sidebar ul li a:hover,
+        .sidebar ul li a.active {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+        
+        .sidebar ul li a.active {
+            background: var(--sidebar-active-bg);
+        }
+        
+        .sidebar ul li a i {
+            margin-right: 10px;
+        }
+        
+        /* Page content styling */
+        #content {
+            width: calc(100% - var(--sidebar-width));
+            margin-left: var(--sidebar-width);
+            min-height: 100vh;
+            transition: all 0.3s;
+        }
+        
+        /* Header */
+        .top-navbar {
+            padding: 15px 20px;
+            background: var(--header-bg);
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+        }
+        
+        /* Cards */
+        .card {
+            border: none;
+            border-radius: 0.35rem;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.1);
+            margin-bottom: 1.5rem;
+        }
+        
+        .card-header {
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            background-color: #f8f9fc;
+            font-weight: 600;
+        }
+        
+        .stat-card {
+            color: white;
+            border-left: 0.25rem solid;
+        }
+        
+        .stat-card .card-body {
+            padding: 1rem;
+        }
+        
+        .stat-card .card-title {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-card .card-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0;
+        }
+        
+        .stat-card .card-icon {
+            font-size: 2rem;
+            opacity: 0.3;
+            position: absolute;
+            right: 1rem;
+            top: 1rem;
+        }
+        
+        .card-1 {
+            background-color: var(--card-color-1);
+            border-left-color: var(--card-color-1) !important;
+        }
+        
+        .card-2 {
+            background-color: var(--card-color-2);
+            border-left-color: var(--card-color-2) !important;
+        }
+        
+        .card-3 {
+            background-color: var(--card-color-3);
+            border-left-color: var(--card-color-3) !important;
+        }
+        
+        .card-4 {
+            background-color: var(--card-color-4);
+            border-left-color: var(--card-color-4) !important;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .sidebar {
+                margin-left: -250px;
+            }
+            
+            .sidebar.active {
+                margin-left: 0;
+            }
+            
+            #content {
+                width: 100%;
+                margin-left: 0;
+            }
+            
+            #content.active {
+                margin-left: 250px;
+                width: calc(100% - 250px);
+            }
+        }
+        
+        /* Chart container */
+        .chart-container {
+            position: relative;
+            height: 300px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <nav id="sidebar" class="sidebar">
+        <div class="sidebar-header">
+            <h3>Admin Dashboard</h3>
+        </div>
+        
+        <ul class="list-unstyled components">
+            <li>
+                <a href="#" class="active">
+                    <i class="fas fa-tachometer-alt"></i> Dashboard
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <i class="fas fa-shopping-cart"></i> Products
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <i class="fas fa-users"></i> Users
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <i class="fas fa-book"></i> Courses
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <i class="fas fa-clipboard-list"></i> Exams
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <i class="fas fa-chart-bar"></i> Reports
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <i class="fas fa-cog"></i> Settings
+                </a>
+            </li>
+        </ul>
+    </nav>
+    
+    <!-- Page Content -->
+    <div id="content">
+        <!-- Top Navigation -->
+        <nav class="navbar navbar-expand-lg top-navbar">
+            <div class="container-fluid">
+                <button type="button" id="sidebarCollapse" class="btn btn-dark d-inline-block d-md-none">
+                    <i class="fas fa-bars"></i>
+                </button>
+                
+                <div class="d-flex align-items-center ms-auto">
+                    <div class="dropdown">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown">
+                            <i class="fas fa-user-circle me-1"></i> Admin User
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="#">Profile</a></li>
+                            <li><a class="dropdown-item" href="#">Settings</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#">Logout</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </nav>
+        
+        <!-- Main Content -->
+        <div class="container-fluid">
+            <!-- Page Heading -->
+            <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
+                <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
+                    <i class="fas fa-download fa-sm text-white-50"></i> Generate Report
+                </a>
+            </div>
+            
+            <!-- Statistics Cards -->
+            <div class="row">
+                <!-- Total Revenue Card -->
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card stat-card card-1 h-100">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="card-title">TOTAL REVENUE</div>
+                                    <div class="card-value">$40,000</div>
+                                </div>
+                                <div class="col-auto">
+                                    <i class="fas fa-dollar-sign card-icon"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Total Students Card -->
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card stat-card card-2 h-100">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="card-title">TOTAL STUDENTS</div>
+                                    <div class="card-value">1,250</div>
+                                </div>
+                                <div class="col-auto">
+                                    <i class="fas fa-users card-icon"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Exams Scheduled Card -->
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card stat-card card-3 h-100">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="card-title">EXAMS SCHEDULED</div>
+                                    <div class="card-value">24</div>
+                                </div>
+                                <div class="col-auto">
+                                    <i class="fas fa-clipboard-list card-icon"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Pending Requests Card -->
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card stat-card card-4 h-100">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="card-title">PENDING REQUESTS</div>
+                                    <div class="card-value">18</div>
+                                </div>
+                                <div class="col-auto">
+                                    <i class="fas fa-comments card-icon"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Charts Row -->
+            <div class="row">
+                <!-- Area Chart -->
+                <div class="col-xl-8 col-lg-7">
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                            <h6 class="m-0 font-weight-bold text-primary">Revenue Overview</h6>
+                            <div class="dropdown no-arrow">
+                                <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown">
+                                    <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end shadow">
+                                    <li><a class="dropdown-item" href="#">Export Data</a></li>
+                                    <li><a class="dropdown-item" href="#">Print Chart</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" href="#">Refresh</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="chart-container">
+                                <!-- This would be replaced with an actual chart in a real implementation -->
+                                <div class="d-flex align-items-center justify-content-center h-100">
+                                    <p class="text-muted">Revenue chart would be displayed here</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Pie Chart -->
+                <div class="col-xl-4 col-lg-5">
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                            <h6 class="m-0 font-weight-bold text-primary">Traffic Sources</h6>
+                            <div class="dropdown no-arrow">
+                                <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown">
+                                    <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end shadow">
+                                    <li><a class="dropdown-item" href="#">Export Data</a></li>
+                                    <li><a class="dropdown-item" href="#">Print Chart</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" href="#">Refresh</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="chart-container">
+                                <!-- This would be replaced with an actual chart in a real implementation -->
+                                <div class="d-flex align-items-center justify-content-center h-100">
+                                    <p class="text-muted">Pie chart would be displayed here</p>
+                                </div>
+                            </div>
+                            <div class="mt-4 text-center small">
+                                <span class="me-2">
+                                    <i class="fas fa-circle text-primary"></i> Direct
+                                </span>
+                                <span class="me-2">
+                                    <i class="fas fa-circle text-success"></i> Social
+                                </span>
+                                <span class="me-2">
+                                    <i class="fas fa-circle text-info"></i> Referral
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Recent Activity Section -->
+            <div class="row">
+                <div class="col-lg-6 mb-4">
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">Recent Exams</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-bordered" width="100%" cellspacing="0">
+                                    <thead>
+                                        <tr>
+                                            <th>Exam Name</th>
+                                            <th>Date</th>
+                                            <th>Status</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Mathematics Final</td>
+                                            <td>2023-06-15</td>
+                                            <td><span class="badge bg-success">Completed</span></td>
+                                            <td><button class="btn btn-sm btn-primary">View</button></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Science Midterm</td>
+                                            <td>2023-06-20</td>
+                                            <td><span class="badge bg-warning">Pending</span></td>
+                                            <td><button class="btn btn-sm btn-primary">View</button></td>
+                                        </tr>
+                                        <tr>
+                                            <td>History Quiz</td>
+                                            <td>2023-06-25</td>
+                                            <td><span class="badge bg-info">Scheduled</span></td>
+                                            <td><button class="btn btn-sm btn-primary">View</button></td>
+                                        </tr>
+                                        <tr>
+                                            <td>English Final</td>
+                                            <td>2023-07-01</td>
+                                            <td><span class="badge bg-secondary">Upcoming</span></td>
+                                            <td><button class="btn btn-sm btn-primary">View</button></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-6 mb-4">
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">Recent Orders</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-bordered" width="100%" cellspacing="0">
+                                    <thead>
+                                        <tr>
+                                            <th>Order #</th>
+                                            <th>Customer</th>
+                                            <th>Amount</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>ORD-1001</td>
+                                            <td>John Smith</td>
+                                            <td>$120.00</td>
+                                            <td><span class="badge bg-success">Completed</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>ORD-1002</td>
+                                            <td>Sarah Johnson</td>
+                                            <td>$85.50</td>
+                                            <td><span class="badge bg-info">Shipped</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>ORD-1003</td>
+                                            <td>Michael Brown</td>
+                                            <td>$210.00</td>
+                                            <td><span class="badge bg-warning">Processing</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>ORD-1004</td>
+                                            <td>Emily Davis</td>
+                                            <td>$45.99</td>
+                                            <td><span class="badge bg-danger">Cancelled</span></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Toggle sidebar on mobile
+        document.getElementById('sidebarCollapse').addEventListener('click', function() {
+            document.getElementById('sidebar').classList.toggle('active');
+            document.getElementById('content').classList.toggle('active');
+        });
+        
+        // Close sidebar when clicking outside on mobile
+        document.getElementById('content').addEventListener('click', function() {
+            if (window.innerWidth <= 768) {
+                if (document.getElementById('sidebar').classList.contains('active')) {
+                    document.getElementById('sidebar').classList.remove('active');
+                    document.getElementById('content').classList.remove('active');
+                }
+            }
+        });
+    </script>
+</body>
+</html>
